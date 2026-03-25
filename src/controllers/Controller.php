@@ -4,7 +4,7 @@ namespace Src\Controllers;
 use src\views\View;
 use src\serveses\DB;
 
-class MainController extends Controller
+class Controller
 {
     public $view;
     public $layout = 'default';
@@ -18,11 +18,6 @@ class MainController extends Controller
     {
         $db = new DB;
         $articles = $db->query("SELECT * FROM `articles`;");
-        $this->view->renderHtml('articles/index.php', ['articles' => $articles]);
-    }
-
-    public function sayHello($name)
-    {
-        echo 'Привет, ' . $name;
+        $this->view->renderHtml('main/main.php', ['articles' => $articles]);
     }
 }

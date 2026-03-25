@@ -1,5 +1,4 @@
 <?php
-
 // use Src\Controllers\MainController;  
 spl_autoload_register(function (string $className) {
     require_once __DIR__ . '/' . str_replace('\\', '/', $className . '.php');
@@ -20,7 +19,7 @@ foreach ($routes as $pattern => $controllerAndAction) {
     }
 }
 
-if(!$isRouteFound) {
+if (!$isRouteFound) {
     echo 'Страница не найдена';
     return;
 }
@@ -33,5 +32,6 @@ unset($matches[0]);
 
 $contoller = new $controllerName;
 $contoller->$actionName(...$matches);
-
 ?>
+
+
