@@ -29,5 +29,14 @@ class ArticlesController extends Controller
         }
        
     }
+    public function edit($id) //редактирование
+    {
+        $article = Articles::getById($id);
+        // var_dump($article);
+        if($article === null){
+            $this->view->renderHtml('errors/404.php',[],404);
+        }
+        $this->view->renderHtml('articles/edit.php',['article' => $article]);
+    }
    
 }
