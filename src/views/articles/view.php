@@ -9,6 +9,6 @@
 <body>
     <h1><?= $article->getName() ?></h1>
     <?= $article->getText() ?>
-    <?= $article->getAuthor()->getNickname() ?> 
+    <!-- <?php // $article->getAuthor()->getNickname() ?>  -->
 </body>
 </html>

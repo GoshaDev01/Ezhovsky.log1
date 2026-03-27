@@ -4,10 +4,10 @@ use src\serveses\DB;
 // namespace src\Views;
 class Articles extends ActiveRecordEntity
 {
-    private $author_id;
-    private $name;
-    private $text;
-    private $created_at;
+    protected $author_id;
+    protected $name;
+    protected $text;
+    protected $created_at;
 
     // protected static function getTableName(): string
     // {
@@ -22,9 +22,21 @@ class Articles extends ActiveRecordEntity
     {
         return $this->name;
     }
-    public function getText(): string
+    public function getText(): string 
     {
         return $this->text;
+    }
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+    public function setAuthor_id($author_id)
+    {
+        $this->author_id = $author_id;
     }
     public function getCreated_at(): int 
     {
@@ -44,6 +56,12 @@ class Articles extends ActiveRecordEntity
     {
         return Users::getById($this->author_id);
     }
-    
+    public  function updateFromArray(array $field)
+    {
+        // var_dump($field);
+        $this->name = $field['name'];
+        $this->text = $field['text'];
+        $this->save();
+    }
 
 }

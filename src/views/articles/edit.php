@@ -7,13 +7,15 @@
     <title>НОВОСТИ | Информация статьи</title>
 </head>
 <body>
-    <h1>Редактирование статьи<?= $article->getName() ?></h1>
-    <p><?= $article->getText() ?></p>
-    <?= $article->getAuthor()->getNickname() ?> 
+    <h1>Редактирование статьи: <br><?= $article->getName() ?></h1>
+    <!-- <p><?php// $article->getText() ?></p> -->
+    <!-- <?php // $article->getAuthor()->getNickname() ?>  -->
 
     <form action="" method="POST" >
+
         <label> Название статьи : <input type="text" name="name" value="<?= $article->getName()?>"></label><br>
-        <label> Текст статьи : <input type="text" name="text" value="<?= $article->getText()?>"></label><br>
+        <label> Текст статьи :<textarea class="fff"name="text" id=""><?= $article->getText()?></textarea></label><br><br>
+        <!-- <label> Текст статьи : <input type="text" name="text" value="<?php// $article->getText()?>"></label><br> -->
         <input type="submit" value="Обновить" class="btn btn-dark card-button">
     </form>
 </body>
