@@ -2,6 +2,7 @@
 
 namespace src\models;
 use LDAP\Result;
+use src\exceptions\invalidArgumentException;
 use src\serveses\DB;
 abstract class ActiveRecordEntity
 {
@@ -73,6 +74,19 @@ abstract class ActiveRecordEntity
         //  var_dump(($sql));
         
     }
+    // public function signUp()
+    // {
+    //     if (!empty($_POST)) {
+    //         try {
+    //             $user = User::signUp($_POST);
+    //         } catch (invalidArgumentException $e) {
+    //             $this->view->renderHtml('users/signUp.php', ['error' => $e->getMessage()]);
+    //             return;
+    //         }
+    //     }
+    //     $this->view->renderHtml('users/signUp.php');
+    // }
+
     public function delete()
     {
         $db=DB::getInstance(); // опдключение к бд

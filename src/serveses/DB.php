@@ -1,6 +1,7 @@
 <?php
 
 namespace Src\Serveses;
+use src\exceptions\DbException;
 
 class DB
 {
@@ -10,13 +11,18 @@ class DB
     {
         $dbOptions = (require __DIR__ . '/../config/settingsDB.php')['db'];
 
-        $this->pdo = new \PDO(
-            'mysql:host=' . $dbOptions['host'] . ';dbname=' . $dbOptions['dbname'],
-            $dbOptions['user'],
-            $dbOptions['password']
-        );
+        try{
+            $this->pdo = new \PDO(
+                'mysql:host=' . $dbOptions['host'] . ';dbname=' . $dbOptions['dbname'],
+                $dbOptions['user'],
+                $dbOptions['password']
+            );
+    
+            $this->pdo->exec('SET NAMES UTF8');
 
-        $this->pdo->exec('SET NAMES UTF8');
+        }catch(\PDOException $e){
+            throw new DbException('Ошибка при подключении к базе данный' . $e->getMessage());
+        }
     }
     public static function getInstance() //статик выполняется просто так, без вызова
     {

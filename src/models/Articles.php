@@ -52,9 +52,9 @@ class Articles extends ActiveRecordEntity
     {
         return 'articles';
     }
-    public function getAuthor(): Users
+    public function getAuthor(): User
     {
-        return Users::getById($this->author_id);
+        return User::getById($this->author_id);
     }
     public  function updateFromArray(array $field)
     {

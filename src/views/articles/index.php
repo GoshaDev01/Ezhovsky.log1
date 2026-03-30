@@ -12,9 +12,9 @@
                     <h5><?=  $article->getAuthor()->getNickname()?></h5>
                     <p class="card-text"><?= $article->getText() ?></p>
                     
-                    <a   href="../article/<?= $article->getId()?>" class="btn btn-dark card-button">Подробнее</a> <!-- добавил ../ чтобы возвращаться на главную страницу-->
+                    <a   href="../article/<?= $article->getId()?>" id="podrobnee"class="btn btn-dark card-button">Подробнее</a>
                 </div>
             </div>
         </article>
     <?php endforeach ?>
-</section>
+   

@@ -18,17 +18,17 @@
 <header>
     <h1>Мой Блог</h1>
     <nav>
-        <a href="#home">Главная</a>
+        <a href="../articles/">Главная</a>
         <a href="#about">О нас</a>
         <a href="#blog">Блог</a>
-        <a href="#contact">Контакты</a>
+        <a href="../users/signUp">Регистраци</a>
     </nav>
 </header>
 
     <main class="container pt-3 pb-3">
          <?= $content ?><br>
          <br>
-         <a href="../articles/" class="btn btn-dark card-button">Назад</a>
+         
     </main>
 
    

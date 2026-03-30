@@ -2,7 +2,7 @@ header {
     padding-left: 50px !important;
     padding-right: 50px !important;
     background-color: #74baff;
-    color: white;
+    color: rgb(255, 255, 255) !important;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -30,7 +30,7 @@ header h1 {
 nav a {
     font-size: 19px !important;
     margin-left: 50px;
-    color: white;
+    color: rgb(255, 255, 255);
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
@@ -52,6 +52,5 @@ footer {
     margin-top: auto; 
     box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
 }
-/* .fff{
-    width: 200px !important;
-} */
+
+
