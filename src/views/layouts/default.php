@@ -20,7 +20,7 @@
     <nav>
         <a href="../articles/">Главная</a>
         <a href="#about">О нас</a>
-        <a href="#blog">Блог</a>
+        <a href="../users/logIn">Вход</a>
         <a href="../users/signUp">Регистраци</a>
     </nav>
 </header>

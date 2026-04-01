@@ -6,6 +6,7 @@ return [
     '~^article/(\d+)/edit$~' => [src\controllers\ArticlesController::class, 'edit'],
     '~^article/(\d+)/delete$~' => [src\controllers\ArticlesController::class, 'delete'],
     '~^users/signUp$~' => [src\controllers\UsersController::class, 'signUp'],
+    '~^users/logIn$~' => [src\controllers\UsersController::class, 'logIn'],
     '~^hello/(.*)$~' => [src\controllers\MainController::class, 'sayHello'],
     '~^test/$~' => [src\controllers\TestController::class, 'view'],
     '~^$~' => [src\controllers\MainController::class, 'main'],
