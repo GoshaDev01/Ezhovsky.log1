@@ -1,76 +1,86 @@
 <?php
+namespace src\controllers;
 
-namespace Src\Controllers;
 use src\models\Articles;
-use src\models\Users;
 use src\exceptions\NotFoundException;
-
+use src\exceptions\UnAuthorizeException;
+use src\exceptions\invalidArgumentException;
 
 class ArticlesController extends Controller
 {
     public function index()
     {
-        $articles = Articles:: findAll();
-        // $db = new DB;
-        // $articles = $db->query("SELECT * FROM `articles`;" , [], Articles::class);
-        // var_dump($articles); die;
+        $articles = Articles::findAll();
         $this->view->renderHtml('articles/index.php', ['articles' => $articles]);
     }
 
-    
-    public function view($id)
+    public function view(int $id)
     {
         $article = Articles::getById($id);
-        if($article !== null){
-
-            // $author = Users:: getById($article->getAuthor_id());
-            $this->view->renderHtml('articles/view.php', ['article' => $article]);
-            
-        }else{
+        if ($article === null) {
             throw new NotFoundException();
-            // $this->view->renderHtml('errors/404.php',[],404);
-            // return;
         }
-       
+        $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }
-    public function edit($id) //редактирование
+
+    public function edit(int $id)
     {
         $article = Articles::getById($id);
-        // var_dump($article);
-        if($article === null){
-            // $this->view->renderHtml('errors/404.php',[],404);
-            // return;
+        if ($article === null) {
             throw new NotFoundException();
         }
-        $this->view->renderHtml('articles/edit.php',['article' => $article]);
 
-        if(!empty($_POST)){
+        // Проверка прав: только автор может редактировать
+        if ($this->user === null || $this->user->getId() !== $article->getAuthor_id()) {
+            throw new UnAuthorizeException();
+        }
+
+        // Обработка POST до рендеринга
+        if (!empty($_POST)) {
             $article->updateFromArray($_POST);
+            header('Location: ../../article/' . $article->getId());
+            exit;
         }
+
+        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
     }
+
     public function add()
     {
-        $article = new Articles();
-        $article->setName('Новая статья');
-        $article->setText('Текст новой статья');
-        $article->setAuthor_id(1);
-        $article->save();
-    }
-    public function delete($id) //редактирование
-    {
-        $article = Articles::getById($id);
-        // var_dump($article);
-        if($article === null){
-            throw new NotFoundException();
-            // $this->view->renderHtml('errors/404.php',[],404);
-            // return;
+        if ($this->user === null) {
+            throw new UnAuthorizeException();
         }
-        $article->delete();
-        // $this->view->renderHtml('articles/edit.php',['article' => $article]);
-
-        // if(!empty($_POST)){
-        //     $article->updateFromArray($_POST);
-        // }
+        if (!empty($_POST)) {
+            try {
+                $article = Articles::create($_POST, $_FILES['img'], $this->user);
+              
+            } catch (InvalidArgumentException $e) {
+                $this->view->renderHtml('articles/add.php', ['error' => $e->getMessage()]);
+                return;
+            }
+        }
+         $this->view->renderHtml('articles/add.php');
+        // $article = new Articles();
+        // $article->setName('Новая статья');
+        // $article->setText('Текст новой статьи');
+        // $article->setAuthor_id($this->user->getId()); // вместо 1
+        // $article->save();
+        // header('Location: ../articles/');
+        // exit;
     }
-   
+
+    public function delete(int $id)
+{
+    $article = Articles::getById($id);
+    if ($article === null) {
+        throw new NotFoundException();
+    }
+    // Проверка прав
+    if ($this->user === null || $this->user->getId() !== $article->getAuthor_id()) {
+        throw new UnAuthorizeException();
+    }
+    $article->delete();
+    header('Location: ../../articles/');
+    exit;
+}
 }

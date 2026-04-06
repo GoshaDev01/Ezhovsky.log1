@@ -21,7 +21,7 @@ class User extends ActiveRecordEntity
     {
         return $this->id;
     }
-    public function getAuth_token(): int 
+    public function getAuth_token(): string 
     {
         return $this->auth_token;
     }
@@ -45,20 +45,22 @@ class User extends ActiveRecordEntity
     {
         return $this->is_confirmed;
     }
-    public function getCreated_at(): int 
+    public function getCreated_at(): string
     {
         return $this->created_at;
     }
-    public static function getById($id): ? self
-    {
-        $db = DB::getInstance();
-        $entities = $db->query("SELECT * FROM `users` WHERE id = :id; ;", [':id' => $id], static::class);   
-        return $entities ? $entities[0] : null;
-    }
-    public function refreshAuthToken()
-    {    
-        $this->auth_token = sha1(random_bytes(100)) . sha1(random_bytes(100)) . sha1(random_bytes(100));   
-    }
+    // В User.php
+public static function getById($id): ?self
+{
+    $db = DB::getInstance();
+    $entities = $db->query("SELECT * FROM `users` WHERE id = :id", [':id' => $id], static::class);
+    return $entities ? $entities[0] : null;
+}
+public function refreshAuthToken()
+{    
+    // Генерируем надёжный токен
+    $this->auth_token = bin2hex(random_bytes(32)) . sha1(uniqid('', true));
+}
     protected static function getTableName(): string
     {
         return 'users';
@@ -101,7 +103,7 @@ class User extends ActiveRecordEntity
     $user->save();
     return $user;
 }
-public static function logIn(array $logInData) :User
+public static function logIn(array $logInData): User
 {
     if (empty($logInData['nickname'])) {
         throw new InvalidArgumentException('Не передан логин');
@@ -110,8 +112,7 @@ public static function logIn(array $logInData) :User
         throw new InvalidArgumentException('Не передан пароль');
     }
     
-
-    $user = User::findOneByColumn('nickname', $logInData['nickname'] /* !==null */);
+    $user = User::findOneByColumn('nickname', $logInData['nickname']);
     
     if ($user === null) {
         throw new InvalidArgumentException('Неправильный nickname или пароль');
@@ -121,8 +122,7 @@ public static function logIn(array $logInData) :User
         throw new InvalidArgumentException('Неправильный nickname или пароль');
     }
     
-    $user->refreshAuthToken();
-    $user->save();
+    // refreshAuthToken будет вызван в createToken
     return $user;
 }
 

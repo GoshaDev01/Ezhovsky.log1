@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Serveses;
+namespace src\serveses;
 use src\exceptions\DbException;
 
 class DB

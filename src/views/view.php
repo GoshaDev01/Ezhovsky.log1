@@ -5,12 +5,17 @@ namespace Src\Views;
 class View
 {
     private $layout;
+    private $extraVars =[];
 
     public function __construct(string $layout)
     {
         $this->layout = $layout;
     }
 
+    public function setVar(string $name, $value)
+    { 
+        $this->extraVars[$name] = $value;
+    }
 
     public function renderHtml(string $viewName, array $vars = [], int $code = 200)
     {
@@ -22,19 +27,17 @@ class View
     }
 
     public function renderFile(string $fileName, array $vars)
-    {
-        extract($vars);
-        $fileName = __DIR__ . '/' . $fileName;
-        if (file_exists($fileName)) {
-            ob_start();
-
-            include $fileName;
-            $buffer = ob_get_contents();
-
-            ob_get_clean();
-            return $buffer;
-        } else {
-            echo "Не найден файл по пути $fileName"; die;
-        }
+{
+    extract($vars);
+    extract($this->extraVars);
+    $fileName = __DIR__ . '/' . $fileName;
+    if (file_exists($fileName)) {
+        ob_start();
+        include $fileName;
+        return ob_get_clean(); // исправлено: сразу возвращаем содержимое
+    } else {
+        echo "Не найден файл по пути $fileName";
+        die;
     }
+}
 }

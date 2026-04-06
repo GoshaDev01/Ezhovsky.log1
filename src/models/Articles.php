@@ -1,5 +1,6 @@
 <?php
 namespace src\models;
+use src\exceptions\invalidArgumentException;
 use src\serveses\DB;
 // namespace src\Views;
 class Articles extends ActiveRecordEntity
@@ -8,21 +9,47 @@ class Articles extends ActiveRecordEntity
     protected $name;
     protected $text;
     protected $created_at;
+    protected $img = null;
 
-    // protected static function getTableName(): string
-    // {
-    //     return 'articles';
-    // }
-    
-    public function getAuthor_id(): int 
+    public function getImg(){
+        return $this->img;
+    }
+
+    public static function create(array $fields, array $imgFile, User $user): Articles
+    {
+        if (empty($fields['name'])) {
+            throw new invalidArgumentException('Не передано название стаьи');
+        }
+        if (empty($fields['text'])) {
+            throw new invalidArgumentException('Не передан некст стаьи');
+        }
+        if ($imgFile['size'] > 10 * 1024 * 1024 * 1024) {
+            throw new invalidArgumentException('Файл не соответствует допустимым размерам');
+        }
+        $article = new Articles();
+        $article->name = $fields['name'];
+        $article->text = $fields['text'];
+        $article->author_id = $user->getId();
+        if(!empty($imgFile['name'])) {
+            $filePath = 'assets/imgs/' . $imgFile['name'];
+            $article->img = $filePath;
+            if (!move_uploaded_file($imgFile['tmp_name'], $filePath)) {
+                throw new invalidArgumentException('ошибка загрузки файла');
+            }
+        }
+        $article->save();
+        return $article;
+       
+    }
+    public function getAuthor_id(): int
     {
         return $this->author_id;
     }
-    public function getName(): string 
+    public function getName(): string
     {
         return $this->name;
     }
-    public function getText(): string 
+    public function getText(): string
     {
         return $this->text;
     }
@@ -38,14 +65,15 @@ class Articles extends ActiveRecordEntity
     {
         $this->author_id = $author_id;
     }
-    public function getCreated_at(): int 
+    public function getCreated_at(): int
     {
         return $this->created_at;
     }
-    public static function getById($id): ? self
+    // В User.php
+    public static function getById($id): ?self
     {
-        $db = DB:: getInstance();;
-        $entities = $db->query("SELECT * FROM `articles` WHERE id = :id; ;", [':id' => $id], static::class);   
+        $db = DB::getInstance();
+        $entities = $db->query("SELECT * FROM `" . static::getTableName() . "` WHERE id = :id", [':id' => $id], static::class);
         return $entities ? $entities[0] : null;
     }
     protected static function getTableName(): string
@@ -56,7 +84,7 @@ class Articles extends ActiveRecordEntity
     {
         return User::getById($this->author_id);
     }
-    public  function updateFromArray(array $field)
+    public function updateFromArray(array $field)
     {
         // var_dump($field);
         $this->name = $field['name'];

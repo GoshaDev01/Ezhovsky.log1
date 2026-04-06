@@ -1,8 +1,9 @@
 <?php
-namespace src\controllers;  // Изменено с Src\Controllers на src\controllers
+namespace src\controllers;
 
-use src\exceptions\invalidArgumentException;
+use src\exceptions\InvalidArgumentException;
 use src\models\User;
+use src\models\UserAuthService;
 
 class UsersController extends Controller
 {
@@ -10,35 +11,56 @@ class UsersController extends Controller
     {
         if (!empty($_POST)) {
             try {
-
-                $user = User::signUp($_POST); 
-
-            } catch (invalidArgumentException $e) {
+                $user = User::signUp($_POST);
+                // После регистрации сразу логиним пользователя
+                UserAuthService::createToken($user);
+                header('Location: ../articles/');
+                exit;
+            } catch (InvalidArgumentException $e) {
                 $this->view->renderHtml('users/signUp.php', ['error' => $e->getMessage()]);
-                return;
-
-            }
-            if ($user instanceof User) {
-                $this->view->renderHtml('users/signUp.php');
                 return;
             }
         }
         $this->view->renderHtml('users/signUp.php');
     }
+
     public function logIn()
     {
         if (!empty($_POST)) {
             try {
-                $user = User::logIn($_POST);  
-                var_dump('login_well'); die();
-            } catch (invalidArgumentException $e) {
+                $user = User::logIn($_POST);
+                // createToken сам сгенерирует новый токен и установит cookie
+                UserAuthService::createToken($user);
+                header('Location: ../articles/');
+                exit;
+            } catch (InvalidArgumentException $e) {
                 $this->view->renderHtml('users/logIn.php', ['error' => $e->getMessage()]);
                 return;
-
             }
         }
         $this->view->renderHtml('users/logIn.php');
-                return;
     }
 
+    public function logOut()
+    {
+        // Получаем текущего пользователя
+        $user = UserAuthService::getUserByToken();
+        if ($user !== null) {
+            // Очищаем токен в БД
+            $user->refreshAuthToken(); // генерируем новый (делаем старый недействительным)
+            $user->save();
+        }
+        // Удаляем cookie
+        UserAuthService::deleteToken();
+        
+        // Перенаправляем на главную
+        header('Location: ../articles/');
+        exit;
+    }
+
+    public function allUsers()
+{
+    $users = User::findAll();
+    $this->view->renderHtml('users/all.php', ['users' => $users]);
+}
 }

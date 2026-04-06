@@ -1,8 +1,10 @@
 <?php
 try {
-    // use Src\Controllers\MainController;  
     spl_autoload_register(function (string $className) {
-        require __DIR__ . '/' . str_replace('\\', '/', $className . '.php');
+        $path = __DIR__ . '/' . str_replace('\\', '/', $className . '.php');
+        if (file_exists($path)) {
+            require $path;
+        }
     });
 
     $route = $_GET['route'] ?? '';
@@ -14,8 +16,7 @@ try {
     $matches = [];
 
     foreach ($routes as $pattern => $controllerAndAction) {
-        preg_match($pattern, $route, $matches);
-        if (!empty($matches)) {
+        if (preg_match($pattern, $route, $matches)) {
             $isRouteFound = true;
             $controllerName = $controllerAndAction[0];
             $actionName = $controllerAndAction[1];
@@ -32,13 +33,12 @@ try {
     $controller->$actionName(...$matches);
     
 } catch (\src\exceptions\DbException $e) {
-    // Создаем контроллер для отображения ошибки
-    $errorController = new \src\Controllers\MainController();
+    $errorController = new \src\controllers\MainController();
     $errorController->view->renderHtml('errors/500.php', ['error' => $e->getMessage()], 500);
-    
 } catch (\src\exceptions\NotFoundException $e) {
-    // Создаем контроллер для отображения ошибки
-    $errorController = new \src\Controllers\MainController();
+    $errorController = new \src\controllers\MainController();
     $errorController->view->renderHtml('errors/404.php', ['error' => $e->getMessage()], 404);
+} catch (\src\exceptions\UnAuthorizeException $e) {
+    $errorController = new \src\controllers\MainController();
+    $errorController->view->renderHtml('errors/401.php', ['error' => $e->getMessage()], 401);
 }
-?>

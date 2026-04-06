@@ -50,7 +50,7 @@ abstract class ActiveRecordEntity
             $index++;
         }
         $sql = 'UPDATE ' . static:: getTableName() . ' SET ' . implode(', ', $colums2params) . ' WHERE id = ' .$this->id;
-        var_dump($sql);
+        // var_dump($sql);
         $db= DB:: getInstance();
         $db->query($sql, $colums2values, static::class);
     }
@@ -74,25 +74,13 @@ abstract class ActiveRecordEntity
         //  var_dump(($sql));
         
     }
-    // public function signUp()
-    // {
-    //     if (!empty($_POST)) {
-    //         try {
-    //             $user = User::signUp($_POST);
-    //         } catch (invalidArgumentException $e) {
-    //             $this->view->renderHtml('users/signUp.php', ['error' => $e->getMessage()]);
-    //             return;
-    //         }
-    //     }
-    //     $this->view->renderHtml('users/signUp.php');
-    // }
 
     public function delete()
-    {
-        $db=DB::getInstance(); // опдключение к бд
-        $db->query('DELETE FROM `' . static::getTableName() . '` WHERE id = :id',[':id'=>$this->id], );
-        $this->id = null;
-    }
+{
+    $db = DB::getInstance();
+    $db->query('DELETE FROM `' . static::getTableName() . '` WHERE id = :id', [':id' => $this->id]);
+    $this->id = null;
+}
     public static function findOneByColumn($columnName, $value): ?self
     {
         $db = DB::getInstance();

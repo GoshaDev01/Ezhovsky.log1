@@ -1,22 +1,19 @@
 <?php
 
-namespace Src\Controllers;
+namespace src\Controllers;
 use src\views\View;
 use src\serveses\DB;
 
 class MainController extends Controller
 {
-    public $view;
-    public $layout = 'default';
-
     public function __construct()
     {
-        $this->view = new View($this->layout);
+        parent::__construct(); // ВЫЗОВИТЕ РОДИТЕЛЬСКИЙ КОНСТРУКТОР
     }
 
     public function main()
     {
-        $db = DB:: getInstance();
+        $db = DB::getInstance();
         $articles = $db->query("SELECT * FROM `articles`;");
         $this->view->renderHtml('articles/index.php', ['articles' => $articles]);
     }
