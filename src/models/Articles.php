@@ -31,15 +31,28 @@ class Articles extends ActiveRecordEntity
         $article->text = $fields['text'];
         $article->author_id = $user->getId();
         if(!empty($imgFile['name'])) {
-            $filePath = 'assets/imgs/' . $imgFile['name'];
-            $article->img = $filePath;
+            // ИСПРАВЛЕНО: создаем полный путь на сервере
+            $uploadDir = __DIR__ . '/../../assets/imgs/';
+            
+            // Создаем папку, если её нет
+            // if (!is_dir($uploadDir)) {
+            //     mkdir($uploadDir, 0777, true);
+            // }
+            
+            // Генерируем уникальное имя, чтобы избежать конфликтов
+            $ext = pathinfo($imgFile['name'], PATHINFO_EXTENSION);
+            $uniqueName = uniqid() . '.' . $ext;
+            $filePath = $uploadDir . $uniqueName;
+            
+            $article->img = '/assets/imgs/' . $uniqueName; // относительный путь для браузера
+            
             if (!move_uploaded_file($imgFile['tmp_name'], $filePath)) {
                 throw new invalidArgumentException('ошибка загрузки файла');
             }
         }
         $article->save();
+        
         return $article;
-       
     }
     public function getAuthor_id(): int
     {
@@ -84,12 +97,51 @@ class Articles extends ActiveRecordEntity
     {
         return User::getById($this->author_id);
     }
-    public function updateFromArray(array $field)
+    public function updateFromArray(array $fields, array $imgFile = null): Articles
     {
-        // var_dump($field);
-        $this->name = $field['name'];
-        $this->text = $field['text'];
+        if (empty($fields['name'])) {
+            throw new invalidArgumentException('Не передано название статьи');
+        }
+        if (empty($fields['text'])) {
+            throw new invalidArgumentException('Не передан текст статьи');
+        }
+        
+        $this->name = $fields['name'];
+        $this->text = $fields['text'];
+     
+        if($imgFile && !empty($imgFile['name']) && $imgFile['error'] === UPLOAD_ERR_OK) {
+            // Проверка размера файла (10MB = 10 * 1024 * 1024)
+            if ($imgFile['size'] > 10 * 1024 * 1024) {
+                throw new invalidArgumentException('Файл не соответствует допустимым размерам (максимум 10MB)');
+            }
+            
+            // Создаем полный путь на сервере
+            $uploadDir = __DIR__ . '/../../assets/imgs/';
+            
+            // СОЗДАЕМ ПАПКУ, если её нет
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            // Удаляем старое фото, если есть
+            if ($this->img && file_exists(__DIR__ . '/../..' . $this->img)) {
+                unlink(__DIR__ . '/../..' . $this->img);
+            }
+            
+            // Генерируем уникальное имя, чтобы избежать конфликтов
+            $ext = pathinfo($imgFile['name'], PATHINFO_EXTENSION);
+            $uniqueName = uniqid() . '.' . $ext;
+            $filePath = $uploadDir . $uniqueName;
+            
+            $this->img = '/assets/imgs/' . $uniqueName; // относительный путь для браузера
+            
+            if (!move_uploaded_file($imgFile['tmp_name'], $filePath)) {
+                throw new invalidArgumentException('Ошибка загрузки файла');
+            }
+        }
+        
         $this->save();
+        return $this;
     }
 
 }

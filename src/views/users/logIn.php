@@ -13,17 +13,20 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="" method="POST">
+                    <form action="" method="POST" autocomplete="off">
                         <div class="mb-3">
                             <label for="nickname" class="form-label">Nickname </label>
                             <input type="text" class="form-control" id="nickname" name="nickname"
-                                value="<?= $_POST['nickname'] ?? '' ?>" placeholder="Введите Nickname">
+                                value="<?= $_POST['nickname'] ?? '' ?>" 
+                                placeholder="Введите Nickname"
+                                autocomplete="off">
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Пароль</label>
                             <input type="password" class="form-control" id="password" name="password"
-                                placeholder="Введите пароль">
+                                placeholder="Введите пароль"
+                                autocomplete="new-password">
                         </div>
 
                         <button type="submit" class="btn btn-dark card-button w-100 py-2">Войти</button>

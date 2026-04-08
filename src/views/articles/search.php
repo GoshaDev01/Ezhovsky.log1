@@ -125,10 +125,14 @@
         color: #F9F0DA;
     }
 </style>
-<!-- <form>
-    <input type="text" placeholder="Искать здесь...">
-    <button type="submit"></button>
-</form><br> -->
+
+<?php if(empty($_GET['q'])):?>
+    <form>
+    <input class="form-control" type="text" name="q" placeholder="Искать здесь...">
+    <input type="submit"></input>
+</form><br>
+<?php else: ?>
+    <h1>Результаты поиска</h1>
 <section id="blogList" class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-4 g-2">
 
     <?php foreach ($articles as $article): ?>
@@ -167,3 +171,4 @@
     <br>
     <p><a class="btn btn-dark card-button" href="/articles/add">Добавить статью</a></p>
 <?php endif; ?>
+<?php endif;?>

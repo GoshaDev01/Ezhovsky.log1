@@ -18,16 +18,30 @@
 <header>
     <h1>Мой Блог</h1>
     <nav>
-    <a>Пользователь: <?= isset($user) && $user ? htmlspecialchars($user->getNickname()) : 'Гость' ?></a>
+    <!-- <a>Пользователь: <?php// isset($user) && $user ? htmlspecialchars($user->getNickname()) : 'Гость' ?></a> -->
     <a href="../users/all">users</a>
     <a href="../articles/">Главная</a>
     <?php if (isset($user) && $user): ?>
-        <a href="../users/logOut">Выход</a>
+        <a href="../users/logOut" class="btn btn-dark card-button" style="width: auto; padding: 8px 20px;">Выход</a>
+        <!-- <a href="../users/logOut"></a> -->
     <?php else: ?>
-        <a href="../users/logIn">Вход</a>
-        <a href="../users/signUp">Регистрация</a>
+        <a href="../users/logIn" class="btn btn-dark card-button" style="width: auto; padding: 8px 20px;">Вход / Регистрация</a>
+        <!-- <a href="../users/logOut" class="btn btn-dark card-button" style="width: auto; padding: 8px 20px;">Выход</a> -->
+        <!-- <a href="../users/logIn">Вход</a>
+        <a href="../users/signUp">Регистрация</a> -->
     <?php endif; ?>
 </nav>
+<style>
+     .btn-dark.card-button {
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-dark.card-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+</style>
 </header>
 
     <main class="container pt-3 pb-3">

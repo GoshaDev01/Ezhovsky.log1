@@ -61,6 +61,8 @@ class UsersController extends Controller
     public function allUsers()
 {
     $users = User::findAll();
+    $currentUser = UserAuthService::getUserByToken(); // текущий авторизованный пользователь
+    $this->view->setVar('currentUser', $currentUser); // передаём отдельно
     $this->view->renderHtml('users/all.php', ['users' => $users]);
 }
 }

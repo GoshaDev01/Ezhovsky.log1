@@ -16,19 +16,21 @@
                         <div class="mb-3">
                             <label for="nickname" class="form-label">Nickname</label>
                             <input type="text" class="form-control" id="nickname" name="nickname"
-                                value="<?= $_POST['nickname'] ?? '' ?>" placeholder="Введите никнейм">
+                                value="<?= $_POST['nickname'] ?? '' ?>" placeholder="Введите Nickname">
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email"
-                                value="<?= $_POST['email'] ?? '' ?>" placeholder="example@mail.com">
+                                value="<?= $_POST['email'] ?? '' ?>" placeholder="example@mail.com"
+                                autocomplete="off">
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password"
-                                value="<?= $_POST['email'] ?? '' ?>" placeholder="Введите пароль">
+                                value="<?= $_POST['email'] ?? '' ?>" placeholder="Введите пароль"
+                                autocomplete="new-password">
                         </div>
 
                         <button type="submit" class="btn btn-dark card-button w-100 py-2">Зарегистрироваться</button>
